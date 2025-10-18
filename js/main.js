@@ -26,7 +26,7 @@ btnElectric.addEventListener('click', () => {
 });
 // Ejeecicio 2
 const listaPokemon = document.getElementById('listaPokemon');
-
+const pokemones151 = []; // Para guardar los 151 Pokémon
 async function cargarPokemones() {
   try {
 
@@ -45,6 +45,15 @@ async function cargarPokemones() {
       const id = dataPokemon.id.toString().padStart(3, '0'); // Ej: 001
       const imagen = dataPokemon.sprites.other['official-artwork'].front_default;
       const tipos = dataPokemon.types.map(t => t.type.name);
+
+      pokemones151.push({
+        id: dataPokemon.id,
+        nombre: dataPokemon.name,
+        tipos: dataPokemon.types.map(t => t.type.name),
+        imagen: dataPokemon.sprites.other['official-artwork'].front_default,
+        peso: (dataPokemon.weight / 10).toFixed(1),
+       altura: (dataPokemon.height / 10).toFixed(1)
+    });
 
       div.innerHTML = `
         <div class="pokemon-imagen">
@@ -69,4 +78,49 @@ async function cargarPokemones() {
 }
 cargarPokemones();
 // Ejercicio 3
+const inputBuscar = document.getElementById('inputBuscar');
+const btnBuscar = document.getElementById('btnBuscar');
+const resultado = document.getElementById('resultado');
 
+function buscarPokemon() {
+  const valor = inputBuscar.value.toLowerCase().trim();
+
+  if (valor === '') {
+    resultado.innerHTML = `<p>Por favor, escribe un nombre o ID.</p>`;
+    return;
+  }
+
+  
+  const encontrado = pokemones151.find(p =>
+    p.nombre.toLowerCase() === valor || p.id.toString() === valor
+  );
+
+  if (encontrado) {
+    resultado.innerHTML = `
+      <div class="pokemon">
+        <div class="pokemon-imagen">
+          <img src="${encontrado.imagen}" alt="${encontrado.nombre}">
+        </div>
+        <div class="pokemon-info">
+          <div class="nombre-contenedor">
+            <p class="pokemon-id">#${encontrado.id.toString().padStart(3,'0')}</p>
+            <h2 class="pokemon-nombre">${encontrado.nombre}</h2>
+          </div>
+          <div class="pokemon-tipos">
+            ${encontrado.tipos.map(tipo => `<p class="tipo ${tipo}">${tipo}</p>`).join('')}
+          </div>
+          <p>Peso: ${encontrado.peso} kg</p>
+          <p>Altura: ${encontrado.altura} m</p>
+        </div>
+      </div>
+    `;
+  } else {
+    resultado.innerHTML = `<p style="color:red;">Pokémon no encontrado entre los 151 primeros</p>`;
+  }
+}
+
+
+btnBuscar.addEventListener('click', buscarPokemon);
+inputBuscar.addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') buscarPokemon();
+});
