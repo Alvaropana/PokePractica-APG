@@ -42,7 +42,7 @@ async function cargarPokemones() {
       div.classList.add('pokemon');
 
       const nombre = dataPokemon.name;
-      const id = dataPokemon.id.toString().padStart(3, '0'); // Ej: 001
+      const id = dataPokemon.id.toString().padStart(3, '0');
       const imagen = dataPokemon.sprites.other['official-artwork'].front_default;
       const tipos = dataPokemon.types.map(t => t.type.name);
 
